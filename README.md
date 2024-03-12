@@ -1,14 +1,6 @@
-# Geodatenanalyse in der Cloud - OGC API Processes und pygeoapi
+# Verarbeitung und Darstellung hochaufgelöster Umweltdaten auf Basis von OGC API Processes`
 
-This repo contains slides for two talks
-
-[FOSSGIS 2023 talk](https://pretalx.com/fossgis2023/talk/BTSUDS) 
-`Geodatenanalyse in der Cloud - OGC API Processes und pygeoapi`
-
-The slides can be found here: https://klips-project.github.io/fossgis2023/
-
-[FOSSGIS 2024 talk]
-`Verarbeitung und Darstellung hochaufgelöster Umweltdaten auf Basis von OGC API Processes`
+This repo contains slides for a talk at FOSSGIS 2024
 
 The slides can be found here: https://klips-project.github.io/fossgis2024/
 
