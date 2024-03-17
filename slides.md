@@ -65,7 +65,7 @@ class: null
 
 [www.klips-projekt.de](https://www.klips-projekt.de)
 
-<img src="/project.svg" style="max-width: 100vw !important" class="self-center" />
+<img src="/project.svg" style="max-width: 100rem !important" class="self-center" />
 
 <div id="columns" class="flex justify-center">
 
@@ -109,8 +109,11 @@ class: null
 
 <!--
 Ausgedehntes Sensornetzwerk in Dresden und Langenfeld, über 300 Temperatursensoren im Stadtgebiet
+
 Fraunhofer HHI hat KI-basiertes Modell erstellt
+
 Aus diesen Daten werden flächendeckend (10 m) Temperaturwerte errechnet
+
 Unsere Rolle im Projekt: Verarbeitung dieser Daten und Bereitstellung für die Anwender, Entwicklung von kleineren Demonstratoren
 -->
 
@@ -136,7 +139,7 @@ class:
 <div class="text-box">
 
 **Prognosedaten**\
-(48h Vergangenheit + Jetztzeitpunkt + 47h Prognose, Auflösung ~ 10 m)\
+((48h Vergangenheit +) Jetztzeitpunkt + 47h Prognose, Auflösung ~ 10 m)\
 Stündlich neue Lieferung\
 *Physikalische Temperatur*: Temperaturwerte aus den gemessenen Temperaturen auf das Stadtgebiet interpoliert in °C\
 *Hitzeindex*: Wärmebelastung - Kombination von Luftfeuchte & Lufttemperatur in °C\
@@ -149,17 +152,21 @@ Stündlich neue Lieferung\
 <img src="/langenfeld-hi.png" class="img-shadow"/>
 
 <div style="margin-left: 12rem !important;  margin-top: 1rem !important;">
-= Stündliche Verarbeitung       von ~ 2 x 96 GeoTIFFs 
+= Stündliche Verarbeitung       von ~ 2 x 48 GeoTIFFs 
 </div>
 
 <!--
 Unterschiedliche Daten im Projekt
+
 Einmal "statische" Daten, die für einen fiktiven Tag zur Verfügung stehen
+
 Wurden einmalig geliefert und in unsere Dienste eingebunden
+
 HI und UHI
 UHI ist Differenz zum Umland, zeigt also auch Infos, wie das Stadtgebiet langsamer abkühlt
 
-Spannender: Stündliche Datenlieferung, 96 Geotiffs, Prognose, Jetztzeitpunkt 
+Spannender: Stündliche Datenlieferung, 48 Geotiffs, Prognose, Jetztzeitpunkt 
+
 Werden jeweils mit Timestamp und 3 Bändern geliefert und von uns verarbeitet
 
 Beispiel: Hitzeindex Langenfeld
@@ -178,6 +185,7 @@ class:
 
 <!--
 Beispiel: UHI 18:00 Uhr Dresden
+
 Unterschiede im Stadtgebiet werden deutlich, langsame Abkühlung
 -->
 
@@ -193,12 +201,19 @@ class:
 
 <!--
 relativ komplexe Gedateninfrastruktur zur stündlichen Verarbeitung und Veröffentlichung der Daten
+
 Darauf ausgelegt, große Datenmengen (in Echtzeit) zu verarbeiten, für die Nutzer aufzubereiten und in verschiedener Form zur Verfügung zu stellen
+
 Daten kommen über Schnittstelle zum HHI an und werden auf dem Server abgelegt und verarbeitet
+
 Am Ende stehen sie u.a. als OGC-konforme Dienste bereit, um in unsere eigenen Anwendungsbeispiele und den Demonstrator der Software AG eingebunden zu werden
+
 Stündlich werden Daten in ein externes Archiv (IÖR) überführt
+
 Unter anderem kommt der Geoserver und eine Postgres Datenbank zum Einsatz
+
 Die einzelnen Komponenten sind als Microservices aufgebaut und laufen unabhängig voneinander
+
 Vorteil: Viele sind projektunabhängig wiederverwendbar
 -->
 
@@ -228,11 +243,17 @@ class:
 
 <!--
 Nachrichten zwischen einzelnen Komponenten werden über RabbitMQ ausgetauscht
+
 Weit verbreitet
+
 Einzelne Komponenten (Worker) können ausfallen, ohne dass die anderen direkt betroffen sind
+
 Idee: Jeder Worker ist für eine spezifische, nicht projektgebundene Aufgabe zuständig und kann so leicht in anderem Kontext nachgebaut werden
+
 Worker alle mit node.js und typescript implementiert, andere Sprachen theoretisch möglich
+
 Im KLIPS-Projekt gibt es eine Workerkette, die einen "Job", der aus einer Reihe von Einzeljobs besteht, als Nachricht an RabbitMQ weitergibt. Zurückgegeben wird dann jeweils der Status des aktuellen, relevanten Einzeljobs an die results Queue, woraufhin der Gesamtstatus ergänzt wird.
+
 Das erlaubt, dass eine Reihe von Einzelkomponenten mit spezifischen Input nacheinander ausgeführt werden können und auch der Output eines Workers als Input an einen anderen Worker weitergegeben werden kann.
 -->
 
@@ -267,8 +288,11 @@ class:
 
 <!--
 Diese Art der Datenablage im Projekt erlaubt den Nutzern auf drei unterschiedliche Weisen auf die Daten zuzugreifen.
+
 Daten stehen als WMS-Time Dienst zur Verfügung
+
 Es kann direkt via HTTP auf die Daten zugegriffen werden
+
 Über OGC-API-Processes können z.B. Statistiken zu den Daten abgerufen werden
 -->
 
@@ -296,7 +320,9 @@ class:
 
 <!--
 Der Standard OGC-API Prozesses erlaubt, ausführbare Prozesse, z.B. Berechnungen, anzubieten
+
 Wir nutzen für die Implementierung die Software pygeoapi
+
 Stellen verschiedene, in python geschriebene, Prozesse zur Verfügung, die z.B. erlauben ber gdal-Funktionen Statistiken für einzelne Punkte oder Polygone auszugeben
 -->
 
@@ -324,12 +350,19 @@ class:
 
 <!--
 Entscheidung für pygeoapi, da zu dem Zeitpunkt relativ weit verbreitet
+
 Python Server Implementierung verschiedener OGC API Standards
+
 Bisher werden im Projekt aber nur OGC API Processes verwendet
+
 Existiert seit 2018, hat eine Plugin-Architektur
+
 Pygeoapi hört auf HTTP requests und gibt responses aus
+
 Eignet sich dadurch besonders gut für die Anforderungen im KLIPS-Projekt
+
 Beispiel: Zeitbasierte zonale Statistiken, z.B. mean, median, maximum, minimum, für ein beliebiges Polygon auf Basis eines COGS
+
 Input: COG URL (des Ordners), Timestamps (Timestamp über Dateinamen), Bänder, Methode
 -->
 
@@ -390,10 +423,15 @@ class:
 
 <!--
 Beispiel: HTTP POST Request and URL mit dem Input,
+
 Koordinaten eines Polygons in Langenfeld (z.B. Schulhof)
+
 Maximum wird berechnet für 15-17 Uhr
+
 1. Band, also physikalische Temperatur
+   
 Ausgabe: 3 Werte (15 Uhr, 16 Uhr, 17 Uhr)
+
 Keine große Spanne, da kaum Temperaturunterschiede zu der Zeit
 -->
 
@@ -409,6 +447,7 @@ class:
 
 <!--
 Teilweise wird das von den Anwendern (z.B. Stadt Dresden) so verwendet, aber doch noch relativ komplex
+
 Deshalb: Reihe von Anwendungsbeispielen, bei denen der Input durch den Nutzer nicht direkt weitergegeben wird, sondern unsere Anwendung "dazwischen" liegt
 -->
 
@@ -428,8 +467,11 @@ https://klips-dev.terrestris.de/easy-to-use-api/chart/?region=dresden&geom=POINT
 
 <!--
 Beispiel: Chart: Input, z.B. Koordinaten für Polygon, etc. Schwellenwert für die Anzeige
+
 Timestamp: Immer vergangene und folgende 48 Stunden, also alle Daten, die im Projekt vorliegen
+
 Chart ist mit Apache eCharts erstellt
+
 Kann z.B. als iframe in eine Website eingebunden werden
 -->
 
@@ -449,11 +491,17 @@ https://klips-dev.terrestris.de/easy-to-use-api/warning/?region=dresden&geom=POI
 
 <!--
 Weiteres Beispiel: Hitzeinformationswidget
+
 Hier werden drei Schwellenwerte mitgegeben, anhand derer dann verschiedene Informationen und Farben angezeigt werden
+
 z.B. Grün, ab 10 Grad, darunter blau für kalte Temperaturen, Hitzewarnung ab 28 Grad
+
 Sehr dynamisch, da Schwellenwerte durch den Nutzer festgelegt werden können
+
 Gilt ebenfalls für die kommenden 48 Stunden
+
 Kann ebenfalls als iFrame eingebunden werden
+
 Use-Case: z.B. Hitzeinformation für Schulen, Pflegeeinrichtungen, etc.
 -->
 ---
@@ -470,6 +518,7 @@ https://klips-dev.terrestris.de/easy-to-use-api/url-generator/
 
 <!--
 Immer noch sehr komplex: Koordinaten müssen mitgegeben werden
+
 Deshalt: URL-Generator, der Nutzern erlaubt, die URL zusammenzustellen
 -->
 
