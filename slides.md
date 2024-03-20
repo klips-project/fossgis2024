@@ -181,7 +181,9 @@ class:
 #
 # Beispiel: UHI für Dresden
 
-<img src="/dresden-uhi.png" style="max-width: 45% !important" class="self-center" />
+<img src="/dresden-uhi.png" style="max-width: 45% !important; -webkit-filter: drop-shadow(5px 5px 5px #222);
+  filter: drop-shadow(1px 1px 3px #000000) !important; margin-left: 14rem; " class="self-center" />
+
 
 <!--
 Beispiel: UHI 18:00 Uhr Dresden
